@@ -10,4 +10,5 @@ Implemented in C++ with the help of the SDL2 and SDL_image libraries.
 
 # Result (Demosaiced):
 ![alt text](https://github.com/jmielc2/Demosaicing/blob/master/docs/result.png?raw=true)
-Notice the colored artifacts around the silhouette, expecially the hair.
+
+Notice the artifacts in the silhouette, expecially the hair.
