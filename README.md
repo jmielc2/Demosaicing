@@ -6,7 +6,8 @@ Implemented in C++ with the help of the SDL2 and SDL_image libraries.
 ![alt text](https://github.com/jmielc2/Demosaicing/blob/master/docs/shinji.jpg?raw=true)
 
 # Intermediate (Mosaiced):
-![alt text](https://github.com/jmielc2/Demosaicing/blob/master/docs/intermediate.bmp?raw=true)
+![alt text](https://github.com/jmielc2/Demosaicing/blob/master/docs/intermediate.png?raw=true)
 
 # Result (Demosaiced):
-![alt text](https://github.com/jmielc2/Demosaicing/blob/master/docs/result.bmp?raw=true)
+![alt text](https://github.com/jmielc2/Demosaicing/blob/master/docs/result.png?raw=true)
+Notice the colored artifacts around the silhouette, expecially the hair.

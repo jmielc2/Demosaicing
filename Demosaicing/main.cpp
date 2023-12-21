@@ -1,4 +1,3 @@
-#include "SDL.h"
 #include "SDL_image.h"
 #include <vector>
 
@@ -111,7 +110,6 @@ int main(int argc, char* argv[])
     }
 
     // Load Image
-    SDL_Init(SDL_INIT_VIDEO);
     input = IMG_Load(argv[1]);
     if (!input) {
         SDL_Log("Failed to load image: %s\n", SDL_GetError());
@@ -121,19 +119,18 @@ int main(int argc, char* argv[])
     // Create Mosaic
     intermediate = createMosaic(input);
     SDL_FreeSurface(input);
-    if (SDL_SaveBMP(intermediate, "intermediate.bmp")) {  // Mosaic Image will be saved to the intermediate.bmp file
+    if (IMG_SavePNG(intermediate, "intermediate.png")) {  // Mosaic Image will be saved to the intermediate file
         SDL_Log("Couldn't save surface: %s\n", SDL_GetError());
     }
 
     // Demosaic
     result = demosaic(intermediate);
     SDL_FreeSurface(intermediate);
-    if (SDL_SaveBMP(result, "result.bmp")) {  // Demosaiced image will be saved to result.bmp
+    if (IMG_SavePNG(result, "result.png")) {  // Demosaiced image will be saved to result file
         SDL_Log("Couldn't save surface: %s\n", SDL_GetError());
     }
 
     // Clean Up
     SDL_FreeSurface(result);
-    SDL_Quit();
     return 0;
 }
