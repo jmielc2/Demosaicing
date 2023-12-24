@@ -1,4 +1,6 @@
-#include "SDL_image.h"
+#include <SDL.h>
+#include <SDL_image.h>
+#include <string>
 #include <vector>
 
 // Channels
@@ -7,16 +9,19 @@
 #define BLUE 2
 
 // Helper structures and functions
-struct Pos {
+struct Pos
+{
     int x;
     int y;
 };
 
-static inline int calcOffset(int x, int y, int width) {
+static inline int calcOffset(int x, int y, int width)
+{
     return 3 * (y * width + x);
 }
 
-static Uint8 interpolateColor(const std::vector<Pos>& positions, SDL_Surface* input, int channel) {
+static Uint8 interpolateColor(const std::vector<Pos>& positions, SDL_Surface* input, int channel)
+{
     unsigned int sum = 0;
     unsigned int count = 0;
     for (const Pos& pos : positions) {
@@ -104,33 +109,43 @@ int main(int argc, char* argv[])
     SDL_Surface* intermediate = NULL;
     SDL_Surface* result = NULL;
 
-    if (argc != 2) {
-        SDL_Log("Usage: %s <image-file>", argv[0]);
+    if (argc < 2) {
+        SDL_Log("Usage: %s <image-file> ...", argv[0]);
         return 0;
     }
 
-    // Load Image
-    input = IMG_Load(argv[1]);
-    if (!input) {
-        SDL_Log("Failed to load image: %s\n", SDL_GetError());
-        return 0;
-    }
+    for (int i = 1; i < argc; i++) {
+        // Load Image
+        input = IMG_Load(argv[i]);
+        if (!input) {
+            SDL_Log("Failed to load image: %s\n", SDL_GetError());
+            continue;
+        }
+        SDL_Log("PROCESSING '%s':", argv[i]);
+        std::string name = argv[i];
+        name = name.substr(0, name.find('.'));
 
-    // Create Mosaic
-    intermediate = createMosaic(input);
-    SDL_FreeSurface(input);
-    if (IMG_SavePNG(intermediate, "intermediate.png")) {  // Mosaic Image will be saved to the intermediate file
-        SDL_Log("Couldn't save surface: %s\n", SDL_GetError());
-    }
+        // Create Mosaic
+        intermediate = createMosaic(input);
+        SDL_FreeSurface(input);
+        if (IMG_SavePNG(intermediate, (name + "-intermediate.png").c_str())) {  // Mosaic Image will be saved to the intermediate file
+            SDL_Log("Couldn't save surface: %s\n", SDL_GetError());
+        } else {
+            SDL_Log("Created mosaic image '%s'.\n", (name + "-intermediate.png").c_str());
+        }
 
-    // Demosaic
-    result = demosaic(intermediate);
-    SDL_FreeSurface(intermediate);
-    if (IMG_SavePNG(result, "result.png")) {  // Demosaiced image will be saved to result file
-        SDL_Log("Couldn't save surface: %s\n", SDL_GetError());
-    }
+        // Demosaic
+        result = demosaic(intermediate);
+        SDL_FreeSurface(intermediate);
+        if (IMG_SavePNG(result, (name + "-result.png").c_str())) {  // Demosaiced image will be saved to result file
+            SDL_Log("Couldn't save surface: %s\n", SDL_GetError());
+        } else {
+            SDL_Log("Created demosaiced image '%s'.\n", (name + "-result.png").c_str());
+        }
 
-    // Clean Up
-    SDL_FreeSurface(result);
+        // Clean Up
+        SDL_FreeSurface(result);
+    }
+    SDL_Log("All images have been processed!\n");
     return 0;
 }
